@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago de Trámite - TRAMINET</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; padding: 20px; 
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; color: white; margin-bottom: 30px; font-size: 2.5em; }
+        
+        .service-card { 
+            background: white; border-radius: 20px; padding: 40px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); margin-bottom: 20px; 
+            text-align: center;
+        }
+        
+        .price { 
+            font-size: 4em; color: #009ee3; font-weight: bold; 
+            margin: 20px 0; text-align: center; 
+        }
+        
+        .pay-button { 
+            background: #009ee3; color: white; border: none; padding: 25px 50px; 
+            font-size: 1.3em; border-radius: 15px; cursor: pointer; margin: 20px 0;
+            width: 100%; font-weight: bold; transition: all 0.3s;
+        }
+        .pay-button:hover { 
+            background: #007bb5; 
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,158,227,0.4);
+        }
+        
+        .verify-button { 
+            background: #28a745; color: white; border: none; padding: 20px 40px; 
+            font-size: 1.2em; border-radius: 12px; cursor: pointer; margin: 10px 0;
+            width: 100%; font-weight: bold; transition: all 0.3s;
+        }
+        .verify-button:hover { 
+            background: #218838; 
+            transform: translateY(-2px);
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: left;
+            border-left: 5px solid #2196f3;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+        }
+        
+        .step-number {
+            background: #2196f3;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .session-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9em;
+            text-align: left;
+        }
+
+        .back-button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pago de Trámite - TRAMINET</h1>
+        
+        <div class="service-card">
+            <h2>Trámite de Acta de Nacimiento</h2>
+            <div class="price">$10</div>
+            <p style="font-size: 1.2em; margin-bottom: 20px;">Procesamiento completo del documento</p>
+
+            <div class="instructions">
+                <h3>🎯 Flujo de Pago en Dos Pestañas</h3>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <strong>Haz clic en "Abrir Pago en Nueva Pestaña"</strong><br>
+                        Se abrirá Mercado Pago en una pestaña nueva
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <strong>Completa el pago en la nueva pestaña</strong><br>
+                        Tarjeta de prueba: <strong>4509 9535 6623 3704</strong><br>
+                        CVV: 123 | Fecha: 11/25 | Nombre: APRO
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <strong>Regresa a esta pestaña y haz clic en "Verificar Estado"</strong><br>
+                        El sistema buscará tu pago automáticamente
+                    </div>
+                </div>
+            </div>
+
+            <button id="openPaymentButton" class="pay-button">
+                🔓 ABRIR PAGO EN NUEVA PESTAÑA
+            </button>
+
+            <div id="statusSection" class="hidden">
+                <div class="session-info">
+                    <strong>Session ID:</strong> <span id="sessionIdDisplay">-</span><br>
+                    <strong>Estado:</strong> <span id="statusDisplay">NO INICIADO</span>
+                </div>
+                
+                <button id="goToVerificationButton" class="verify-button">
+                    🔄 IR A VERIFICAR PAGO
+                </button>
+            </div>
+
+            <a href="/formulario" class="back-button">← Volver al Formulario</a>
+        </div>
+    </div>
+
+    <script>
+        let currentSessionId = null;
+        let paymentWindow = null;
+        
+        const openPaymentButton = document.getElementById('openPaymentButton');
+        const statusSection = document.getElementById('statusSection');
+        const sessionIdDisplay = document.getElementById('sessionIdDisplay');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const goToVerificationButton = document.getElementById('goToVerificationButton');
+
+        // Abrir pago en nueva pestaña
+        openPaymentButton.addEventListener('click', async () => {
+            try {
+                openPaymentButton.disabled = true;
+                openPaymentButton.textContent = '🔄 CREANDO PAGO...';
+
+                const response = await fetch('/create_preference', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                
+                if (data.success && data.init_point) {
+                    currentSessionId = data.session_id;
+                    
+                    // Guardar sessionId en localStorage para la página de verificación
+                    localStorage.setItem('paymentSessionId', currentSessionId);
+                    
+                    // Mostrar panel de estado
+                    statusSection.classList.remove('hidden');
+                    sessionIdDisplay.textContent = currentSessionId;
+                    statusDisplay.textContent = 'PENDIENTE';
+                    
+                    // Abrir Mercado Pago en nueva pestaña
+                    paymentWindow = window.open(
+                        data.init_point, 
+                        'mercado_pago_payment',
+                        'width=800,height=600,scrollbars=yes'
+                    );
+                    
+                    openPaymentButton.textContent = '✅ PAGO ABIERTO EN NUEVA PESTAÑA';
+                    
+                } else {
+                    throw new Error(data.error || 'Error desconocido');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+                openPaymentButton.disabled = false;
+                openPaymentButton.textContent = '🔓 ABRIR PAGO EN NUEVA PESTAÑA';
+            }
+        });
+
+        // Ir a la página de verificación
+        goToVerificationButton.addEventListener('click', () => {
+            if (currentSessionId) {
+                window.location.href = '/verificar_pago';
+            } else {
+                alert('Primero debes abrir el pago en una nueva pestaña');
+            }
+        });
+    </script>
+</body>
+</html>

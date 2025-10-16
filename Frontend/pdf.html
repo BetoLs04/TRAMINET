@@ -3,8 +3,74 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TRAMINET - Confirmación de Solicitud</title>
-  <link rel="stylesheet" href="form.css" /> <!-- Reutilizamos el CSS de form -->
+  <title>TRAMINET - Descarga de Acta de Nacimiento</title>
+  <link rel="stylesheet" href="form.css" />
+  <style>
+    .pdf-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .estado-container {
+      margin: 20px 0;
+      min-height: 60px;
+    }
+    
+    .vista-previa {
+      margin: 30px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin: 30px 0;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    .btn-primary {
+      background: #007bff;
+    }
+    
+    .btn-success {
+      background: #28a745;
+    }
+    
+    .alert {
+      padding: 15px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+    
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+  </style>
 </head>
 <body>
   <header class="app-header">
@@ -12,28 +78,39 @@
       <div class="logo">TRAMINET</div>
     </div>
     <div class="user">
-      <div class="greeting">Hola, Juan</div>
-      <div class="avatar">J</div>
+      <div class="greeting">Hola, Usuario</div>
+      <div class="avatar">U</div>
     </div>
   </header>
 
   <div class="app">
     <aside class="sidebar">
       <nav class="menu">
-        <a href="#">Inicio</a>
-        <a href="/Frontend/front.html" class="active">Trámites</a>
-        <a href="#">Pagos</a>
+        <a href="/">Inicio</a>
+        <a href="/formulario" class="active">Trámites</a>
+        <a href="/pagos">Pagos</a>
         <a href="#">Perfil</a>
       </nav>
     </aside>
 
     <main class="main">
       <section class="content">
-        <div class="container">
-          <h1>Tu solicitud ha sido completada</h1>
-          <p class="lead">Haz clic en el botón para descargar tu comprobante.</p>
+        <div class="pdf-container">
+          <h1>Descarga tu Acta de Nacimiento</h1>
+          <p class="lead">Genera y descarga tu acta de nacimiento directamente.</p>
+          
+          <div id="estado" class="estado-container">
+            <div class="alert alert-info">
+              ✅ Listo para descargar tu Acta de Nacimiento
+            </div>
+          </div>
+          
           <div class="actions">
-            <button id="descargarPDF">DESCARGAR PDF</button>
+            <button id="descargarPDF" class="btn btn-success">DESCARGAR ACTA DE NACIMIENTO</button>
+          </div>
+          
+          <div id="vistaPrevia" class="vista-previa">
+            <p>Tu Acta de Nacimiento se generará y descargará automáticamente.</p>
           </div>
         </div>
         <div class="copyright">@CRYPTEX</div>
@@ -41,7 +118,6 @@
     </main>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="pdf.js"></script>
 </body>
 </html>

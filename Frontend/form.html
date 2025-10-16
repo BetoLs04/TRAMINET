@@ -20,10 +20,10 @@
   <div class="app">
     <aside class="sidebar">
       <nav class="menu">
-        <a href="#">Inicio</a>
-        <a href="/Frontend/front.html" class="active">Trámites</a>
-        <a href="#">Pagos</a>
-        <a href="#">Perfil</a>
+        <a href="/">Inicio</a> <!-- Va a front.html -->
+        <a href="/formulario" class="active">Trámites</a>
+        <a href="/pagos">Pagos</a> <!-- Va a sistema de pagos -->
+        <a href="/verificar_pago">Verificar Pago</a>
       </nav>
     </aside>
 
@@ -32,6 +32,11 @@
         <div class="container">
           <h1>Solicitud de Acta de Nacimiento</h1>
           <p class="lead">Por favor, completa los datos obligatorios marcados con <span class="required">*</span>.</p>
+          
+          <!-- Información de pago -->
+          <div class="payment-info" style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #2196f3;">
+            <strong>💳 Información importante:</strong> Después de enviar el formulario serás redirigido al sistema de pago para completar tu trámite.
+          </div>
 
           <form id="miFormulario" novalidate>
             <div class="full">
@@ -60,7 +65,7 @@
 
             <div class="actions">
               <button type="reset" class="secondary">Limpiar</button>
-              <button type="submit">Enviar solicitud</button>
+              <button type="submit">Enviar solicitud y proceder al pago</button>
             </div>
           </form>
 
@@ -72,12 +77,6 @@
     </main>
   </div>
 
-  
   <script src="scriptform.js"></script>
-  <script
-  type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"
-></script>
-
 </body>
 </html>

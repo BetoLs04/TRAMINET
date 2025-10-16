@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Pago - TRAMINET</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; padding: 20px; 
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; color: white; margin-bottom: 30px; font-size: 2.5em; }
+        
+        .verification-card { 
+            background: white; border-radius: 20px; padding: 40px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); margin-bottom: 20px; 
+            text-align: center;
+        }
+        
+        .verify-button { 
+            background: #28a745; color: white; border: none; padding: 20px 40px; 
+            font-size: 1.2em; border-radius: 12px; cursor: pointer; margin: 10px 0;
+            width: 100%; font-weight: bold; transition: all 0.3s;
+        }
+        .verify-button:hover { 
+            background: #218838; 
+            transform: translateY(-2px);
+        }
+        
+        .force-check-button { 
+            background: #fd7e14; color: white; border: none; padding: 20px 40px; 
+            font-size: 1.2em; border-radius: 12px; cursor: pointer; margin: 10px 0;
+            width: 100%; font-weight: bold; transition: all 0.3s;
+        }
+        .force-check-button:hover { 
+            background: #e96a00; 
+            transform: translateY(-2px);
+        }
+        
+        .access-button { 
+            background: #28a745; color: white; border: none; padding: 25px 50px; 
+            font-size: 1.3em; border-radius: 15px; cursor: pointer; margin: 20px 0;
+            width: 100%; font-weight: bold; transition: all 0.3s;
+        }
+        .access-button:hover { 
+            background: #218838; 
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(40,167,69,0.4);
+        }
+        
+        .back-button { 
+            background: #6c757d; color: white; border: none; padding: 15px 30px; 
+            font-size: 1em; border-radius: 10px; cursor: pointer; margin: 10px 0;
+            width: 100%; font-weight: bold; transition: all 0.3s;
+        }
+        .back-button:hover { 
+            background: #5a6268; 
+            transform: translateY(-2px);
+        }
+        
+        .status-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            text-align: center;
+            border-left: 5px solid #ffd93d;
+        }
+        
+        .status-indicator {
+            font-size: 1.5em;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+        
+        .session-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9em;
+            text-align: left;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verificar Pago</h1>
+        
+        <div class="verification-card">
+            <h2>🔍 Panel de Verificación</h2>
+            
+            <div class="session-info">
+                <strong>Session ID:</strong> <span id="sessionIdDisplay">-</span><br>
+                <strong>Estado:</strong> <span id="statusDisplay">NO INICIADO</span>
+            </div>
+            
+            <div id="statusIndicator" class="status-indicator">
+                ⏳ Esperando que inicies la verificación...
+            </div>
+            
+            <button id="verifyPaymentButton" class="verify-button">
+                🔄 VERIFICAR ESTADO DEL PAGO
+            </button>
+            
+            <button id="forceCheckButton" class="force-check-button" style="display: none;">
+                🚀 VERIFICACIÓN FORZADA
+            </button>
+            
+            <div style="margin-top: 20px;">
+                <button id="accessServiceButton" class="access-button" style="display: none;">
+                    🚀 ACCEDER AL TRÁMITE COMPLETADO
+                </button>
+            </div>
+            
+            <button id="backButton" class="back-button">
+                ← VOLVER A LA PÁGINA DE PAGOS
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSessionId = null;
+        
+        const sessionIdDisplay = document.getElementById('sessionIdDisplay');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const verifyPaymentButton = document.getElementById('verifyPaymentButton');
+        const forceCheckButton = document.getElementById('forceCheckButton');
+        const accessServiceButton = document.getElementById('accessServiceButton');
+        const backButton = document.getElementById('backButton');
+
+        // Obtener sessionId del localStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            currentSessionId = localStorage.getItem('paymentSessionId');
+            
+            if (currentSessionId) {
+                sessionIdDisplay.textContent = currentSessionId;
+                statusDisplay.textContent = 'PENDIENTE';
+                statusIndicator.textContent = '💰 Pago listo - Puedes verificar el estado';
+                statusIndicator.className = 'status-indicator';
+                
+                // Mostrar botón de verificación forzada después de 30 segundos
+                setTimeout(() => {
+                    forceCheckButton.style.display = 'block';
+                }, 30000);
+            } else {
+                statusIndicator.textContent = '❌ No se encontró un ID de sesión. Regresa a la página de pagos.';
+                statusIndicator.className = 'status-indicator';
+                verifyPaymentButton.disabled = true;
+            }
+        });
+
+        // Verificar estado del pago
+        verifyPaymentButton.addEventListener('click', async () => {
+            if (!currentSessionId) {
+                alert('No se encontró un ID de sesión. Regresa a la página de pagos.');
+                return;
+            }
+            
+            verifyPaymentButton.disabled = true;
+            verifyPaymentButton.textContent = '🔄 VERIFICANDO...';
+            
+            try {
+                const response = await fetch('/check-payment/' + currentSessionId);
+                const data = await response.json();
+                
+                console.log('Respuesta de verificación:', data);
+                
+                if (data.success) {
+                    statusDisplay.textContent = data.payment_status.toUpperCase();
+                    
+                    if (data.payment_status === 'approved') {
+                        statusIndicator.textContent = '✅ ¡PAGO APROBADO! Trámite completado';
+                        statusIndicator.className = 'status-indicator status-approved';
+                        accessServiceButton.style.display = 'block';
+                        verifyPaymentButton.style.display = 'none';
+                        forceCheckButton.style.display = 'none';
+                    } else if (data.payment_status === 'pending') {
+                        statusIndicator.textContent = '⏳ Pago aún pendiente - Si ya pagaste, usa Verificación Forzada';
+                        statusIndicator.className = 'status-indicator';
+                        forceCheckButton.style.display = 'block';
+                    } else {
+                        statusIndicator.textContent = `❌ Estado: ${data.payment_status}`;
+                        statusIndicator.className = 'status-indicator';
+                    }
+                } else {
+                    statusIndicator.textContent = '❌ Error en verificación: ' + data.error;
+                    statusIndicator.className = 'status-indicator';
+                }
+            } catch (error) {
+                statusIndicator.textContent = '❌ Error de conexión: ' + error.message;
+                statusIndicator.className = 'status-indicator';
+            }
+            
+            verifyPaymentButton.disabled = false;
+            verifyPaymentButton.textContent = '🔄 VERIFICAR ESTADO DEL PAGO';
+        });
+
+        // Verificación forzada
+        forceCheckButton.addEventListener('click', async () => {
+            if (!currentSessionId) return;
+            
+            forceCheckButton.disabled = true;
+            forceCheckButton.textContent = '🚀 BUSCANDO PAGO...';
+            
+            try {
+                const response = await fetch('/force-check/' + currentSessionId);
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusDisplay.textContent = data.payment_status.toUpperCase();
+                    
+                    if (data.payment_status === 'approved') {
+                        statusIndicator.textContent = '✅ ¡PAGO ENCONTRADO Y APROBADO!';
+                        statusIndicator.className = 'status-indicator status-approved';
+                        accessServiceButton.style.display = 'block';
+                        verifyPaymentButton.style.display = 'none';
+                        forceCheckButton.style.display = 'none';
+                    } else {
+                        statusIndicator.textContent = `❌ Estado: ${data.payment_status}`;
+                        statusIndicator.className = 'status-indicator';
+                    }
+                } else {
+                    statusIndicator.textContent = '❌ Pago no encontrado con verificación forzada';
+                    statusIndicator.className = 'status-indicator';
+                }
+            } catch (error) {
+                statusIndicator.textContent = '❌ Error en verificación forzada: ' + error.message;
+                statusIndicator.className = 'status-indicator';
+            }
+            
+            forceCheckButton.disabled = false;
+            forceCheckButton.textContent = '🚀 VERIFICACIÓN FORZADA';
+        });
+
+        // Acceder al servicio
+        accessServiceButton.addEventListener('click', () => {
+            window.location.href = '/pdf';
+        });
+
+        // Volver a la página de pagos
+        backButton.addEventListener('click', () => {
+            window.location.href = '/pagos';
+        });
+
+        // Verificación automática cada 10 segundos
+        setInterval(() => {
+            if (currentSessionId) {
+                fetch('/check-payment/' + currentSessionId)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.payment_status === 'approved') {
+                            statusDisplay.textContent = 'APROBADO';
+                            statusIndicator.textContent = '✅ ¡PAGO APROBADO! Trámite completado';
+                            statusIndicator.className = 'status-indicator status-approved';
+                            accessServiceButton.style.display = 'block';
+                            verifyPaymentButton.style.display = 'none';
+                            forceCheckButton.style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.log('Verificación automática falló:', error));
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
