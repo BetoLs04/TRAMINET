@@ -1,0 +1,90 @@
+:root{
+  --bg:#f6f7fb;
+  --card:#fff;
+  --muted:#667085;
+  --accent:#0b74ff;
+  --shadow:0 6px 18px rgba(20,30,50,0.06);
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:#0f1724;-webkit-font-smoothing:antialiased}
+.app{display:grid;grid-template-columns:260px 1fr;gap:28px;height:100vh;padding:28px;align-items:start}
+.app-header{position:fixed;left:0;right:0;top:0;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#fff;box-shadow:0 1px 0 rgba(15,23,36,0.04);z-index:20}
+.logo{font-weight:700;font-size:20px;letter-spacing:1px}
+.user{display:flex;gap:12px;align-items:center}
+.greeting{font-size:14px;color:var(--muted);text-align:right}
+.avatar{width:36px;height:36px;border-radius:50%;background:#e6eefc;display:flex;align-items:center;justify-content:center;color:#063;font-weight:600}
+.sidebar{margin-top:80px;padding:22px}
+.menu{display:flex;flex-direction:column;gap:8px}
+.menu a{padding:12px 14px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:600}
+.menu a.active{background:var(--card);box-shadow:var(--shadow);color:#0f1724}
+.main{margin-top:80px;padding:22px 6px;overflow:auto}
+h1{font-size:28px;margin:6px 0 18px}
+
+/* ====== Formulario ====== */
+.content .container{
+  background:var(--card);
+  padding:28px;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  max-width:640px;
+}
+.content h1{margin-top:0}
+.lead{color:var(--muted);margin-bottom:18px}
+form{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px 18px;
+}
+form label{display:block;font-weight:600;margin-bottom:6px}
+.required{color:#d00}
+.full{grid-column:1/-1}
+input{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:15px;
+}
+input:focus{border-color:var(--accent);outline:none}
+.help-text{font-size:13px;color:var(--muted)}
+.help-text a{color:var(--accent);text-decoration:none}
+.actions{
+  grid-column:1/-1;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:10px;
+}
+button{
+  padding:10px 20px;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  background:var(--accent);
+  color:#fff;
+}
+button.secondary{
+  background:#e2e8f0;
+  color:#0f1724;
+}
+.result{margin-top:16px;font-weight:600}
+.copyright{
+  margin-top:22px;
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* responsive */
+@media (max-width:1024px){
+  .app{grid-template-columns:60px 1fr}
+  .sidebar{padding-top:120px}
+  .app-header{padding:0 12px}
+}
+@media (max-width:520px){
+  .app{padding:12px;gap:12px}
+  form{grid-template-columns:1fr}
+}

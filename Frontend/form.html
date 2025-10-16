@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TRAMINET - Acta de Nacimiento</title>
+  <link rel="stylesheet" href="form.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo">TRAMINET</div>
+    </div>
+    <div class="user">
+      <div class="greeting">Hola, Juan</div>
+      <div class="avatar">J</div>
+    </div>
+  </header>
+
+  <div class="app">
+    <aside class="sidebar">
+      <nav class="menu">
+        <a href="#">Inicio</a>
+        <a href="/Frontend/front.html" class="active">Trámites</a>
+        <a href="#">Pagos</a>
+        <a href="#">Perfil</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <section class="content">
+        <div class="container">
+          <h1>Solicitud de Acta de Nacimiento</h1>
+          <p class="lead">Por favor, completa los datos obligatorios marcados con <span class="required">*</span>.</p>
+
+          <form id="miFormulario" novalidate>
+            <div class="full">
+              <label for="nombre">Nombre completo <span class="required">*</span></label>
+              <input id="nombre" name="nombre" type="text" placeholder="Nombre(s) Apellidos" required>
+            </div>
+
+            <div class="full">
+              <label for="curp">CURP <span class="required">*</span></label>
+              <input id="curp" name="curp" type="text" placeholder="PEHJ800101HDFABC02" maxlength="18" required>
+              <small class="help-text">
+                ¿No conoces tu CURP?
+                <a href="https://www.gob.mx/curp/" target="_blank" rel="noopener">Consúltala aquí</a>
+              </small>
+            </div>
+
+            <div>
+              <label for="fechaNacimiento">Fecha de nacimiento <span class="required">*</span></label>
+              <input id="fechaNacimiento" name="fechaNacimiento" type="date" required>
+            </div>
+
+            <div>
+              <label for="lugarNacimiento">Lugar de nacimiento <span class="required">*</span></label>
+              <input id="lugarNacimiento" name="lugarNacimiento" type="text" placeholder="Ciudad, Estado" required>
+            </div>
+
+            <div class="actions">
+              <button type="reset" class="secondary">Limpiar</button>
+              <button type="submit">Enviar solicitud</button>
+            </div>
+          </form>
+
+          <div id="result" class="result"></div>
+        </div>
+
+        <div class="copyright">@CRYPTEX</div>
+      </section>
+    </main>
+  </div>
+
+  
+  <script src="scriptform.js"></script>
+  <script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"
+></script>
+
+</body>
+</html>
